@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Blog - My blog</title>
+		<link rel="stylesheet" href="resources/css/main.css">
+    <link rel="shortcut icon" href="resources/img/pic.jpg">
+	</head>
+  
+	<body>
+		<header class="header">
+      <div class="container">
+        <a class="logo" href="/">
+          <img src="resources/img/pic.jpg" alt="My blog logo"/>
+        </a>
+        <nav class="nav">
+          <ul class="list">
+            <li class="item  item--nav">
+              <a href="https://github.com/aristosMiliaressis">
+                <img width="20px" src="resources/img/github.svg" class="link-ico fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+                Github
+              </a>
+            </li>
+            <li class="item  item--nav">
+              <a href="https://www.linkedin.com/in/aristophanes-miliaressis-340206185/">
+                <img width="20px" src="resources/img/linkedin.png" class="link-ico fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+                LinkedIn
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main  container">
+      <div id="homeSection" class="content">
+        <article class="article  article--post  typeset">			
+          <h1>Bio</h1>
+          <p>There isn't much going on here yet, but watch this space</p>
+        </article>
+        <table id="blogTable">
+          <tr>
+            <th>
+              Blogpost
+            </th>
+            <th>
+              Date
+            </th>
+          </tr>
+          
+        </table>
+      </div>
+
+      <div id="blogSection" class="content is-hidden">
+        <ul class="list list--posts">
+          <li class="item  item--post">
+            <article class="article  article--post  typeset">
+              <h2><a id="title">Hello World</a></h2>
+              <small class="small  post-meta">
+                <span id="tags" class="label  label--category"></span>
+                &nbsp;&middot;&nbsp;
+                <time id="date" class="time"></time>
+              </small>
+            </article>
+          </li>
+        </ul>
+
+        <article id="blogContent" class="article  article--post  typeset">
+        </article>
+
+        <a href="/" class="float bottomright">
+          <img width="40px" src="resources/img/back.png" title="Go Back to Index" />
+        </a>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="copyright  typeset">
+          <small id="copyright" class="small">&copy; </small>
+        </div>
+      </div>
+    </footer>
+
+		<link href="resources/css/font.css" rel="stylesheet">
+    <script>
+      window.copyright.innerText += ' My blog ' + new Date().getFullYear();
+
+      function renderBlogTable(blogs) {
+        for (var blog of blogs) {
+          var tr = document.createElement('tr');
+          var td1 = document.createElement('td');
+          var td2 = document.createElement('td');
+          var a = document.createElement('a');
+          a.innerText = blog.title;
+          a.href = '#' + blog.id;
+          td1.append(a);
+          td2.innerText = blog.date;
+          tr.append(td1);
+          tr.append(td2);
+          window.blogTable.append(tr);
+        }
+      }
+
+      function renderBlog(blog) {
+        window.homeSection.classList.add('is-hidden');
+        window.blogSection.classList.remove('is-hidden');
+        console.log("rendering: " + blog);
+
+        fetch('blog/'+blog+'.html')
+          .then(response => response.text())
+          .then(html => 
+          {
+            fetch('blog/index.json')
+              .then(response => response.json())
+              .then(json => 
+              {
+                var blogMetadata = json.find(b => b.id == blog);
+                window.title.innerText = blogMetadata.title;
+                window.date.innerText = blogMetadata.date;
+                window.tags.innerText = blogMetadata.tags.join(',');
+              });
+        
+            window.blogContent.innerHTML = html;
+          });
+      }
+
+      function renderPage() {
+        if(window.location.hash) {
+          renderBlog(window.location.hash.substring(1));
+          return;
+        }
+
+        fetch('blog/index.json')
+          .then(response => response.json())
+          .then(renderBlogTable);
+      }
+      
+      addEventListener('hashchange', (event) => renderPage());
+
+      renderPage();
+    </script>
+	</body>
+</html>
