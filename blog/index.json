@@ -4,11 +4,5 @@
         "title": "Demo blogpost",
         "date": "2022-11-17",
         "tags": [ "#offsec", "#demo" ]
-    },
-    {
-        "id": "websec-basics",
-        "title": "Websec Basics",
-        "date": "2022-11-17",
-        "tags": [ "#websec" ]
     }
 ]
